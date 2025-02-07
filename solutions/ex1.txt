@@ -1,0 +1,85 @@
+# NOTE:
+#   for any remarks, send an email to wcardoen [\at] gmail.com  
+
+# Exercise 1.a:
+# ============
+
+# 1. The SETSEED is in the #idef construct
+#    I could also have used the following construct
+#    #ifdef SETSEED
+#     ...
+#    #elif
+#     ...
+#    #endif
+
+# 2.Generate rand.i
+#   Can be done in different ways:
+cpp -DSETSEED rand.c -o rand1.i
+# or
+gcc -E -DSETSEED rand.c -o rand2.i
+
+# Check whether the SEED is set to 12345
+
+
+# 3.The string SZ is now set to 1000
+#   The preprocessor replaces the SZ by the value set in define
+
+# 4.If you do not use -DSETSEED if will set the SEED to 
+#   a random value
+
+
+
+# Exercise 1.b:
+# ============
+
+gcc -S  rand1.i -o rand1.s
+gcc -S  -DSETSEED rand.c -o rand2.s
+# As you can see, the .s files are HUMAN readable (contain assembler code)
+
+
+
+# Exercise 1.c:
+# ============
+# This can be done in severl ways:
+gcc -c -DSETSEED rand.c -o rand1.o   
+as rand2.s -o rand2.o
+
+
+
+# Exercise 1.d:
+# ============
+# The command objdump -D rand.o dissambles all parts of the object file
+# You will find different sections:
+# .text (code), ,.data, .rodata, .comment, etc
+
+
+
+# Exercise 1.e:
+# ============
+# 1.Generate the object file
+gcc -c -DSETSEED rand.c
+
+# 2.Low-level linking on Rocky8 => a.out
+ld rand.o /usr/lib64/crt1.o /usr/lib64/crti.o /usr/lib64/crtn.o -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2
+
+# 3.Execute a.out
+./a.out
+
+# 4.More common way
+gcc -DSETSEED rand.c
+
+# 5.Set the name of executable
+EXE=myexe
+
+# 6.Low-level generation of the executable (EXE)
+ld rand.o /usr/lib64/crt1.o /usr/lib64/crti.o /usr/lib64/crtn.o -lc -dynamic-linker /lib64/ld-linux-x86-64.so.2
+
+# 7.Try the executable
+./myexe
+
+# 8. Most common way of creating the executable (EXE)
+gcc -o $EXE -DSETSEED rand.c
+
+# 9.Try it out
+./myexe
+

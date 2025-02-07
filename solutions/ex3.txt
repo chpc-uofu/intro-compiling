@@ -1,0 +1,54 @@
+# NOTE:
+#   for any remarks, send an email to wcardoen [\at] gmail.com  
+
+# Exercise 3:
+# ==========
+# We will now first create the DYNAMIC library libvector.so 
+#    to show how one links in a dynamic library
+
+# STEP 1:
+# ------ 
+cd vector/src
+#         Create the OBJECT file vector.o   (The ULONG is the default type!!!!)
+gcc -c -fPIC -I../include vector.c
+
+#         Create the DYNAMIC library libvector.so in the directory lib
+cd ../lib
+gcc -shared -o libvector.so ../src/vector.o
+
+   
+
+
+# STEP 2:
+# ------
+# nm libvector.so displays the symbols in the shared object
+
+
+
+# STEP 3:
+# ------
+
+# Create the executables test_col, run_collatz
+cd collatz
+# Create all the object files (collatz.o, test_col.o, run_collatz.o)
+cd src
+gcc -c -I../include -I../../vector/include *.c
+
+# Create the executables run_collatz, test_col using the RUNPATH approach
+gcc -o test_col collatz.o test_col.o -Wl,--rpath=../../vector/lib/ -L../../vector/lib/ -lvector
+gcc -o run_collatz collatz.o run_collatz.o -Wl,--rpath=../../vector/lib/ -L../../vector/lib/ -lvector
+
+
+# Create the executables run_collatz, test_col without the RUNPATH approach
+gcc -o test_col collatz.o test_col.o  -L../../vector/lib/ -lvector
+gcc -o run_collatz collatz.o run_collatz.o  -L../../vector/lib/ -lvector
+
+# Thus:
+u0253283@notch309:src]$ ./run_collatz
+./run_collatz: error while loading shared libraries: libvector.so: cannot open shared object file: No such file or directory
+
+# In order to run the executables you must add the RUNPATH to the LD_LIBRARY_PATH env. variable
+export LD_LIBRARY_PATH=../../vector/lib:$LD_LIBRARY_PATH
+[u0253283@notch309:src]$ export LD_LIBRARY_PATH=../../vector/lib:$LD_LIBRARY_PATH
+[u0253283@notch309:src]$ ./run_collatz
+Enter a positive integer:

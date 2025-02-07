@@ -1,0 +1,27 @@
+# NOTE:
+#   for any remarks, send an email to wcardoen [\at] gmail.com  
+
+# Exercise 2:
+# ==========
+# In order to use unsigned int we need to EXPLICITLY set the UINT flag
+# during the preprocessing.
+
+# Compile the vector.c and testvec.c with the PREPROCESSOR FLAG
+cd src
+gcc -c -DUINT -I../include vector.c    # vector.o
+
+cd ../check
+gcc -c -DUINT -I../include testvec.c
+
+# BUILD the executable testvec
+cd check
+gcc -o testvec testvec.o ../src/vector.o
+
+
+# Check it out:  => You should see the Type:UINT   
+./testvec 
+
+
+ 
+
+
